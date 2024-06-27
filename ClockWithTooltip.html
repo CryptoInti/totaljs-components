@@ -1,0 +1,62 @@
+<script>
+    exports.id = 'inlinerd265';
+    exports.name = 'ClockWithTooltip';
+    exports.group = 'Controls';
+    exports.author = 'Total.js';
+    exports.icon = 'ti ti-clock';
+    exports.config = { bold: false, flash: true, seconds: true };
+    exports.version = '1';
+    exports.follow = true;
+
+    exports.make = function(instance, config, element, cls, iseditor) {
+        var counter = 0;
+        var format = '';
+
+        var render = function() {
+            counter++;
+
+            var date = new Date();
+            element.html(date.format(format).replace(/\s/g, config.flash ? (counter % 2 === 0 ? ':' : ' ') : ':'));
+
+            instance.set('value', date);
+
+            if (counter > 100000)
+                counter = 0;
+
+        };
+
+        var interval = setInterval(render, 1000);
+
+        instance.on('destroy', function() {
+            interval && clearInterval(interval);
+            interval = null;
+        });
+
+        instance.on('configure', function() {
+            format = 'HH mm' + (config.seconds ? ' ss' : '');
+            element.tclass('b', config.bold);
+        });
+
+        instance.emit('configure');
+
+        if (!iseditor) {
+            instance.state.validate = false;
+            instance.state.bind = true;
+        }
+
+        render();
+    };
+
+    var tooltip = new Total.ui.Tooltip({
+        element: element,
+        text: 'Click to show tooltip',
+        show: false,
+        onShow: function() {
+            // Add your tooltip content here
+            element.html('<p>This is the tooltip content</p>');
+        },
+        onHide: function() {
+            element.html('');
+        }
+    });
+</script>
