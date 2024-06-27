@@ -1,0 +1,48 @@
+<style>
+    .CLASS { display: inline-block; }
+    .CLASS img { max-width: 100%; height: auto; }
+</style>
+
+<script>
+
+
+    exports.id = 'imageviewer';
+    exports.name = 'K] Image Viewer';
+    exports.group = 'Kuska component';
+    exports.author = 'Total.js';
+    exports.icon = 'ti ti-image';
+    exports.config = { url: 'https://arweave.net/gCSV0izS9xukw2tDtZFVzK3HIgufwgMJnlnibMZ71HI' }; // URL de la imagen, en el futuro puede ser un input el componente
+    exports.version = '1';
+    exports.follow = true;
+
+    exports.make = function(instance, config, element, cls, iseditor) {
+
+        var render = function() {
+            element.html('<div class="' + cls + '"><img src="' + config.url + '" alt="Image"></div>');
+        };
+
+        instance.on('configure', function() {
+            render();
+        });
+
+        instance.emit('configure');
+
+        if (!iseditor) {
+            instance.state.validate = false;
+            instance.state.bind = true;
+        }
+
+        render();
+    };
+
+</script>
+
+<readme>
+The component renders an image from a specified URL.
+</readme>
+
+<settings>
+    <div class="padding">
+        <ui-component name="input" path="?.url" config="type:text">Image URL</ui-component>
+    </div>
+</settings>
