@@ -1,62 +1,55 @@
+<style>
+	.CLASS p { padding: 0; margin: 0; position: relative; display: inline-block; width: 100%; }
+	.CLASS .text-right { text-align: right; }
+	.CLASS .text-center { text-align: center; }
+	.CLASS .text-justify { text-align: justify; }
+</style>
+
 <script>
-    exports.id = 'inlinerd265';
-    exports.name = 'ClockWithTooltip';
-    exports.group = 'Controls';
-    exports.author = 'Total.js';
-    exports.icon = 'ti ti-clock';
-    exports.config = { bold: false, flash: true, seconds: true };
-    exports.version = '1';
-    exports.follow = true;
 
-    exports.make = function(instance, config, element, cls, iseditor) {
-        var counter = 0;
-        var format = '';
+	exports.id = 'paragraph';
+	exports.group = 'Content';
+	exports.name = 'Paragraph';
+	exports.icon = 'ti ti-align-left';
+	exports.author = 'Total.js';
+	exports.config = { html: 'Enter text', align: 'left', color: '#777', size: '14' };
+	exports.render = 'auto';
+	exports.settings = 'auto';
+	exports.version = '1';
 
-        var render = function() {
-            counter++;
+	exports.make = function(instance, config, element) {
 
-            var date = new Date();
-            element.html(date.format(format).replace(/\s/g, config.flash ? (counter % 2 === 0 ? ':' : ' ') : ':'));
+		var render = function() {
+			element.html('<p class="text-{align} text" style="font-size:{size}px;color:{color}">{html}</p>'.args(config));
+		};
 
-            instance.set('value', date);
+		element.on('click', '.ti', function(e) {
+			UIBuilder.emit(e.ctrlKey || e.metaKey ? 'attr' : 'icon', this);
+		});
 
-            if (counter > 100000)
-                counter = 0;
+		element.on('dblclick', '.text', function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			instance.edit(this, { multiline: true });
+		});
 
-        };
+		element.on('click', 'a', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			UIBuilder.emit('link', this);
+		});
 
-        var interval = setInterval(render, 1000);
+		instance.on('configure', render);
+		instance.on('html', function(meta) {
+			config.html = element.find('.text').html();
+		});
 
-        instance.on('destroy', function() {
-            interval && clearInterval(interval);
-            interval = null;
-        });
+		render();
 
-        instance.on('configure', function() {
-            format = 'HH mm' + (config.seconds ? ' ss' : '');
-            element.tclass('b', config.bold);
-        });
+	};
 
-        instance.emit('configure');
-
-        if (!iseditor) {
-            instance.state.validate = false;
-            instance.state.bind = true;
-        }
-
-        render();
-    };
-
-    var tooltip = new Total.ui.Tooltip({
-        element: element,
-        text: 'Click to show tooltip',
-        show: false,
-        onShow: function() {
-            // Add your tooltip content here
-            element.html('<p>This is the tooltip content</p>');
-        },
-        onHide: function() {
-            element.html('');
-        }
-    });
 </script>
+
+<readme>
+	This component creates a paragraph element with specific style you can set in settings.
+</readme>
