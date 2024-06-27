@@ -1,0 +1,69 @@
+<style>
+    .CLASS { font-size: 14px; position: relative; display: inline-block; cursor: pointer; }
+    .CLASS .tooltip { 
+        visibility: hidden; 
+        background-color: black; 
+        color: #fff; 
+        text-align: center; 
+        border-radius: 5px; 
+        padding: 5px; 
+        position: absolute; 
+        z-index: 1; 
+        bottom: 100%; 
+        left: 50%; 
+        margin-left: -60px; 
+        opacity: 0; 
+        transition: opacity 0.3s; 
+        width: 120px; 
+    }
+    .CLASS:hover .tooltip { 
+        visibility: visible; 
+        opacity: 1; 
+    }
+</style>
+
+<script>
+
+    // Documentation: https://docs.totaljs.com/uibuilder/swyj001cs41d/
+
+    exports.id = 'inlinesujz5';
+    exports.name = 'TooltipText';
+    exports.group = 'Controls';
+    exports.author = 'Total.js';
+    exports.icon = 'ti ti-info';
+    exports.config = { text: 'Hover over me', tooltip: 'This is a tooltip message' };
+    exports.version = '1';
+    exports.follow = true;
+
+    exports.make = function(instance, config, element, cls, iseditor) {
+
+        var render = function() {
+            element.html('<div class="' + cls + '">' + config.text + '<span class="tooltip">' + config.tooltip + '</span></div>');
+        };
+
+        instance.on('configure', function() {
+            render();
+        });
+
+        instance.emit('configure');
+
+        if (!iseditor) {
+            instance.state.validate = false;
+            instance.state.bind = true;
+        }
+
+        render();
+    };
+
+</script>
+
+<readme>
+The component renders a text with a tooltip message that appears when the mouse hovers over the text.
+</readme>
+
+<settings>
+    <div class="padding">
+        <ui-component name="input" path="?.text" config="type:text">Text to display</ui-component>
+        <ui-component name="input" path="?.tooltip" config="type:text">Tooltip message</ui-component>
+    </div>
+</settings>
